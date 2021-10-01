@@ -1,5 +1,5 @@
 package com.vdm.msgwebservice.entity;
 
 public enum Status {
-    ACTIVE, BANNED
+    ACTIVE, BANNED, NOT_ACTIVE
 }

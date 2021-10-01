@@ -1,9 +1,6 @@
 package com.vdm.msgwebservice.entity;
 
-import com.vdm.msgwebservice.model.DrawBody;
-import com.vdm.msgwebservice.model.FsuArrBody;
-import com.vdm.msgwebservice.model.FsuAwdBody;
-import com.vdm.msgwebservice.model.FsuDepBody;
+import com.vdm.msgwebservice.model.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -59,14 +56,10 @@ public class Message {
         return msgbody;
     }
 
-    private static StringBuilder createMovementSection(DrawBody drawBody) {
+    private static StringBuilder createMovementSectionWithIndicators(DrawBody drawBody) {
         StringBuilder msgbody = new StringBuilder();
 
-        msgbody.append(drawBody.getMovementShipmentDescriptionCode() + drawBody.getMovementNumberofPieces());
-
-        if (!nullOrEmpty(drawBody.getMovementWeightCode(), drawBody.getMovementWeight())) {
-            msgbody.append(drawBody.getMovementWeightCode() + drawBody.getMovementWeight());
-        }
+        msgbody.append(createMovementSection(drawBody));
 
         msgbody.append("/");
 
@@ -87,6 +80,18 @@ public class Message {
         return msgbody;
     }
 
+    private static StringBuilder createMovementSection(DrawBody drawBody) {
+        StringBuilder msgbody = new StringBuilder();
+
+        msgbody.append(drawBody.getMovementShipmentDescriptionCode() + drawBody.getMovementNumberofPieces());
+
+        if (!nullOrEmpty(drawBody.getMovementWeightCode(), drawBody.getMovementWeight())) {
+            msgbody.append(drawBody.getMovementWeightCode() + drawBody.getMovementWeight());
+        }
+        return msgbody;
+    }
+
+    //fullMovement
     public static Message createFsuDepMsg(FsuDepBody fsuDepBody) {
         Message fsuDep = new Message();
         StringBuilder msgbody = createDraw(fsuDepBody);
@@ -103,7 +108,7 @@ public class Message {
 
         msgbody.append("/" + fsuDepBody.getAirportCodeofDeparture() + fsuDepBody.getAirportCodeofArrival() + "/");
 
-        msgbody.append(createMovementSection(fsuDepBody));
+        msgbody.append(createMovementSectionWithIndicators(fsuDepBody));
 
         fsuDep.setBody(msgbody.toString());
         fsuDep.setChannel(fsuDepBody.getTransmissionChannel());
@@ -111,7 +116,7 @@ public class Message {
 
         return fsuDep;
     }
-
+    //fullMovement
     public static Message createFsuArrMsg(FsuArrBody fsuArrBody) {
         Message fsuArr = new Message();
         StringBuilder msgbody = createDraw(fsuArrBody);
@@ -131,7 +136,7 @@ public class Message {
 
         msgbody.append("/" + fsuArrBody.getAirportCodeofArrival() + "/");
 
-        msgbody.append(createMovementSection(fsuArrBody));
+        msgbody.append(createMovementSectionWithIndicators(fsuArrBody));
 
         fsuArr.setBody(msgbody.toString());
         fsuArr.setChannel(fsuArrBody.getTransmissionChannel());
@@ -145,12 +150,9 @@ public class Message {
         StringBuilder msgbody = createDraw(fsuAwdBody);
 
         msgbody.append(fsuAwdBody.getDayofDelivery() + fsuAwdBody.getMonthofDelivery() +
-                fsuAwdBody.getActualTimeofGivenStatusEvent() + "/" + fsuAwdBody.getAirportCodeofDelivery()
-                + "/" + fsuAwdBody.getMovementShipmentDescriptionCode() + fsuAwdBody.getMovementNumberofPieces());
+                fsuAwdBody.getActualTimeofGivenStatusEvent() + "/" + fsuAwdBody.getAirportCodeofDelivery()+ "/");
 
-        if (!nullOrEmpty(fsuAwdBody.getMovementWeightCode(), fsuAwdBody.getMovementWeight())) {
-            msgbody.append(fsuAwdBody.getMovementWeightCode() + fsuAwdBody.getMovementWeight());
-        }
+        msgbody.append(createMovementSection(fsuAwdBody));
 
         fsuAwd.setBody(msgbody.toString());
         fsuAwd.setChannel(fsuAwdBody.getTransmissionChannel());
@@ -158,6 +160,126 @@ public class Message {
 
         return fsuAwd;
     }
+
+    public static Message createFsuCrcMsg(FsuCrcBody fsuCrcBody) {
+        Message fsuCrc = new Message();
+        StringBuilder msgbody = createDraw(fsuCrcBody);
+
+        msgbody.append(fsuCrcBody.getDayofReporting() + fsuCrcBody.getMonthofReporting() +
+                fsuCrcBody.getActualTimeofGivenStatusEvent() + "/" + fsuCrcBody.getAirportCodeofReporting() + "/");
+
+        msgbody.append(createMovementSection(fsuCrcBody));
+
+        msgbody.append("/");
+
+        if (!nullOrEmpty(fsuCrcBody.getCarrierCode(), fsuCrcBody.getFlightNumber())) {
+            msgbody.append(fsuCrcBody.getCarrierCode() + fsuCrcBody.getFlightNumber());
+        }
+
+        msgbody.append("/");
+
+        if (!nullOrEmpty(fsuCrcBody.getDayofScheduledDeparture(), fsuCrcBody.getMonthofScheduledDeparture())) {
+            msgbody.append(fsuCrcBody.getDayofScheduledDeparture() + fsuCrcBody.getMonthofScheduledDeparture());
+        }
+
+        msgbody.append("/" + fsuCrcBody.getAirportCodeofDeparture() + fsuCrcBody.getAirportCodeofArrival());
+
+        fsuCrc.setBody(msgbody.toString());
+        fsuCrc.setChannel(fsuCrcBody.getTransmissionChannel());
+        fsuCrc.setType(fsuCrcBody.getStatusCode());
+
+        return fsuCrc;
+    }
+
+    public static Message createFsuDdlMsg(FsuDdlBody fsuDdlBody) {
+        Message fsuDdl = new Message();
+        StringBuilder msgbody = createDraw(fsuDdlBody);
+
+        msgbody.append(fsuDdlBody.getDayofDeliverytoconsigneesdoor() + fsuDdlBody.getMonthofDeliverytoconsigneesdoor() +
+                fsuDdlBody.getActualTimeofGivenStatusEvent() + "/" + fsuDdlBody.getAirportCodeofDeliverytoconsigneesdoor()+ "/");
+
+        msgbody.append(createMovementSection(fsuDdlBody));
+
+        fsuDdl.setBody(msgbody.toString());
+        fsuDdl.setChannel(fsuDdlBody.getTransmissionChannel());
+        fsuDdl.setType(fsuDdlBody.getStatusCode());
+
+        return fsuDdl;
+    }
+
+    public static Message createFsuCcdMsg(FsuCcdBody fsuCcdBody) {
+        Message fsuCcd = new Message();
+        StringBuilder msgbody = createDraw(fsuCcdBody);
+
+        msgbody.append(fsuCcdBody.getDayofClearance() + fsuCcdBody.getMonthofClearance() +
+                fsuCcdBody.getActualTimeofGivenStatusEvent() + "/" + fsuCcdBody.getAirportCodeofClearance()+ "/");
+
+        msgbody.append(createMovementSection(fsuCcdBody));
+
+        fsuCcd.setBody(msgbody.toString());
+        fsuCcd.setChannel(fsuCcdBody.getTransmissionChannel());
+        fsuCcd.setType(fsuCcdBody.getStatusCode());
+
+        return fsuCcd;
+    }
+
+    public static Message createFsuFohMsg(FsuFohBody fsuFohBody) {
+        Message fsuFoh = new Message();
+        StringBuilder msgbody = createDraw(fsuFohBody);
+
+        msgbody.append(fsuFohBody.getDayofReceipt() + fsuFohBody.getMonthofReceipt() +
+                fsuFohBody.getActualTimeofGivenStatusEvent() + "/" + fsuFohBody.getAirportCodeofReceipt()+ "/");
+
+        msgbody.append(createMovementSection(fsuFohBody));
+
+        fsuFoh.setBody(msgbody.toString());
+        fsuFoh.setChannel(fsuFohBody.getTransmissionChannel());
+        fsuFoh.setType(fsuFohBody.getStatusCode());
+
+        return fsuFoh;
+    }
+
+    public static Message createFsuDisMsg(FsuDisBody fsuDisBody) {
+        Message fsuDis = new Message();
+        StringBuilder msgbody = createDraw(fsuDisBody);
+
+        if (!nullOrEmpty(fsuDisBody.getCarrierCode()) || !nullOrEmpty(fsuDisBody.getFlightNumber())) {
+            msgbody.append(fsuDisBody.getCarrierCode() + fsuDisBody.getFlightNumber());
+        }
+
+        msgbody.append("/");
+
+        msgbody.append(fsuDisBody.getDayofDiscrepancy() + fsuDisBody.getMonthofDiscrepancy() +
+                fsuDisBody.getActualTimeofGivenStatusEvent());
+
+        msgbody.append("/" + fsuDisBody.getAirportCodeofDiscrepancy() + "/" + fsuDisBody.getDiscrepancyCode() + "/");
+
+        msgbody.append(createMovementSection(fsuDisBody));
+
+        fsuDis.setBody(msgbody.toString());
+        fsuDis.setChannel(fsuDisBody.getTransmissionChannel());
+        fsuDis.setType(fsuDisBody.getStatusCode());
+
+        return fsuDis;
+    }
+
+    public static Message createFsuNfdMsg(FsuNfdBody fsuNfdBody) {
+        Message fsuNfd = new Message();
+        StringBuilder msgbody = createDraw(fsuNfdBody);
+
+        msgbody.append(fsuNfdBody.getDayofNotification() + fsuNfdBody.getMonthofNotification() +
+                fsuNfdBody.getActualTimeofGivenStatusEvent() + "/" + fsuNfdBody.getAirportCodeofNotification()+ "/");
+
+        msgbody.append(createMovementSection(fsuNfdBody));
+
+        fsuNfd.setBody(msgbody.toString());
+        fsuNfd.setChannel(fsuNfdBody.getTransmissionChannel());
+        fsuNfd.setType(fsuNfdBody.getStatusCode());
+
+        return fsuNfd;
+    }
+
+
 
 
     public void saveToFile(String path) {

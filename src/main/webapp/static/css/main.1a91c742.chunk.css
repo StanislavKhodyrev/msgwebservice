@@ -1,0 +1,334 @@
+.fsu_inputWrap__tPIuX input {
+    padding: 0;
+    margin: 0;
+    text-transform: uppercase
+}
+
+.fsu_inputWrap__tPIuX input[type=text] {
+    box-sizing: border-box
+}
+
+.fsu_inputWrap__tPIuX input::-webkit-input-placeholder {
+    text-transform: none
+}
+
+.fsu_inputWrap__tPIuX input:-ms-input-placeholder {
+    text-transform: none
+}
+
+.fsu_inputWrap__tPIuX input::placeholder {
+    text-transform: none
+}
+
+.fsu_inputWrap__tPIuX {
+    width: 200px;
+    margin-right: 20px;
+    margin-bottom: 5px
+}
+
+.fsu_inputWrap__tPIuX label {
+    font-weight: 700
+}
+
+.fsu_inputWrap__tPIuX select {
+    padding: 0;
+    margin: 0
+}
+
+.fsu_formDiv__3--Yw {
+    background-color: #fff;
+    min-width: 257px;
+    border: 2px solid #888;
+    border-radius: .5%;
+    font-size: 12.5px;
+    padding: 15px
+}
+
+.fsu_fsublock__lvEMX {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 2px
+}
+
+.fsu_fsu__hXQVg {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    flex: 0 1 420px
+}
+
+.fsu_fsuh4__3ZjVH {
+    flex: 0 1 auto
+}
+
+.fsu_fsublockmini__3ZtHx {
+    display: flex;
+    flex-wrap: wrap;
+    flex: 1 1 auto
+}
+
+.fsu_fsublockoption__3a8Wg {
+    font-family: "MuseoSansCyrl", "serif";
+    flex: 0 0 200px;
+    border: 3px solid #888;
+    background-color: #fff
+}
+
+.fsu_infoblock__20Y6K {
+    display: flex;
+    flex-wrap: wrap;
+    min-width: 257px;
+    border: 3px solid #888;
+    border-radius: .5%;
+    padding-left: 1%;
+    min-height: 55px;
+    justify-content: flex-start;
+    align-items: flex-end;
+    margin-right: 20px
+}
+
+.fsu_infoblockDiv__SmbIq {
+    width: 200px;
+    height: 22px;
+    display: flex;
+    flex-direction: column;
+    border: 2px solid #888
+}
+
+.fsu_infoblockQuantity__12K03 {
+    display: flex;
+    flex-direction: column;
+    min-width: 257px;
+    border: 3px solid #888;
+    border-radius: .5%;
+    padding-left: 1%;
+    min-height: 55px;
+    justify-content: flex-end;
+    align-items: flex-start;
+    margin-right: 20px
+}
+
+.fsu_infoblockQuantityDetail__14B_5 {
+    display: flex;
+    flex-wrap: wrap;
+    max-width: 175vh;
+    min-height: 55px;
+    justify-content: flex-start;
+    align-items: flex-end
+}
+
+.fsu_awb__1h4r9 {
+    padding-left: 1.5%
+}
+
+.fsu_detailAndTotal__2OgjZ {
+    border: 2px solid;
+    border-radius: .5%;
+    width: 175vh;
+    padding-left: 1%;
+    margin-left: 2vh;
+    height: 14vh
+}
+
+.fsu_detail__15GOa, .fsu_total__3OVn- {
+    display: grid;
+    align-items: center;
+    grid-template-columns:repeat(7, 1fr)
+}
+
+h4 {
+    margin: 0;
+    padding: .5%;
+    font-size: 15px
+}
+
+.fsu_MovementDetail__2oar8 {
+    border: 2px solid;
+    border-radius: .5%;
+    width: 175vh;
+    padding-left: 1%;
+    margin-left: 2vh;
+    height: 27.5vh
+}
+
+.fsu_movement__3ieiR, .fsu_time__1dZ5b {
+    display: grid;
+    align-items: center;
+    grid-template-columns:repeat(7, 1fr)
+}
+
+.fsu_validate__6Ex8G {
+    border: 2px solid;
+    border-radius: .5%;
+    min-width: 300px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    padding-left: 1%;
+    height: 9.5vh;
+    color: grey;
+    white-space: pre-line
+}
+
+.fsu_validateMessage__2yHlp {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center
+}
+
+.fsu_message__tnWHn {
+    margin-left: .25%;
+    width: 200px;
+    height: 30px;
+    font-weight: 700;
+    font-size: 15px;
+    padding: 10px 25px;
+    margin-bottom: 20px;
+    cursor: pointer;
+    text-decoration: none;
+    outline: none;
+    color: #000;
+    background-color: #dadada;
+    border: none;
+    border-radius: 5px;
+    box-shadow: 0 4px #aeaeae
+}
+
+.fsu_message__tnWHn:hover {
+    box-shadow: 0 0 5px 1px #4a4a4a;
+    background-color: #1d49aa
+}
+
+.fsu_message__tnWHn:focus {
+    outline: none;
+    box-shadow: 0 0 0 4px #cbd6ee
+}
+
+.fsu_publish__2vIZo {
+    display: flex;
+    justify-content: flex-end
+}
+
+.fsu_errorValidation__35QG0 {
+    bottom: 0;
+    color: red;
+    font-size: 10px;
+    line-height: 10px;
+    padding: 2px 0;
+    margin: 0
+}
+
+#fsu_received-from-block__3VgQD {
+    min-width: 400px
+}
+
+#fsu_received-from-input__Zbwy- {
+    font-size: 10px;
+    width: 400px
+}
+
+.modal-div {
+    flex-direction: column;
+    justify-content: space-between
+}
+
+.modal-btn, .modal-div {
+    display: flex;
+    align-items: center
+}
+
+.modal-btn {
+    justify-content: center;
+    margin-left: .25%;
+    width: 200px;
+    height: 30px;
+    font-weight: 700;
+    font-size: 15px;
+    padding: 10px 25px;
+    margin-bottom: 20px;
+    cursor: pointer;
+    text-decoration: none;
+    outline: none;
+    color: #000;
+    background-color: #dadada;
+    border: none;
+    border-radius: 5px;
+    box-shadow: 0 4px #aeaeae
+}
+
+.modal-btn:hover {
+    box-shadow: 0 0 5px 1px #4a4a4a;
+    background-color: #464c51;
+    color: #fff
+}
+
+.modal-btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 4px #cbd6ee
+}
+
+@font-face {
+    font-family: "MuseoSansCyrl";
+    font-weight: 100;
+    src: local("MuseoSansCyrl"), url(/static/media/MuseoSansCyrl.f0e6808e.otf) format("opentype")
+}
+
+@font-face {
+    font-family: "MuseoSansCyrl";
+    font-weight: 300;
+    src: local("MuseoSansCyrl"), url(/static/media/MuseoSansCyrl_0.b629c23b.otf) format("opentype")
+}
+
+@font-face {
+    font-family: "MuseoSansCyrl";
+    font-weight: 500;
+    src: local("MuseoSansCyrl"), url(/static/media/MuseoSansCyrl_1.49e8040c.otf) format("opentype")
+}
+
+@font-face {
+    font-family: "MuseoSansCyrl";
+    font-weight: 700;
+    src: local("MuseoSansCyrl"), url(/static/media/MuseoSansCyrl_2.1f870401.otf) format("opentype")
+}
+
+@font-face {
+    font-family: "MuseoSansCyrl";
+    font-weight: 900;
+    src: local("MuseoSansCyrl"), url(/static/media/MuseoSansCyrl_3.0096d834.otf) format("opentype")
+}
+
+body {
+    font-family: "MuseoSansCyrl", serif;
+    padding: 0;
+    margin: 0;
+    background-color: #f5f5f5;
+    display: flex;
+    justify-content: center
+}
+
+body, html {
+    min-height: 100%;
+    max-width: 100%;
+    font-size: 100%;
+    line-height: 1
+}
+
+#root {
+    min-height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 30px 20px 20px
+}
+
+.logo {
+    height: 1.2cm;
+    padding: .2cm 0 .3cm;
+    width: 207px;
+    height: 45px
+}
+
+/*# sourceMappingURL=main.1a91c742.chunk.css.map */

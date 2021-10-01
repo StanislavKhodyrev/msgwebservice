@@ -1,6 +1,5 @@
 package com.vdm.msgwebservice.model;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,7 +23,7 @@ public class Validator {
 
         if (nullOrEmpty(fsuDepBody.getStatusCode())) {
             errors.add("The “Status Code” is not selected");
-        } else if (!fsuDepBody.getStatusCode().matches("DEP")) {
+        } else if (!fsuDepBody.getStatusCode().matches("DEP|BKD|MAN|PRE")) {
             errors.add("The “Status Code” field has an incorrect format");
         }
 
@@ -125,7 +124,7 @@ public class Validator {
 
         if (nullOrEmpty(fsuAwdBody.getStatusCode())) {
             errors.add("The “Status Code” is not selected");
-        } else if (!fsuAwdBody.getStatusCode().matches("AWD")) {
+        } else if (!fsuAwdBody.getStatusCode().matches("AWD|DLV")) {
             errors.add("The “Status Code” field has an incorrect format");
         }
 
@@ -152,6 +151,250 @@ public class Validator {
         }
 
         checkMovementSection(fsuAwdBody);
+
+        return errors;
+    }
+
+    public List<String> getListFsuCrcErrors(FsuCrcBody fsuCrcBody) {
+        checkDrawSection(fsuCrcBody);
+
+        if (nullOrEmpty(fsuCrcBody.getStatusCode())) {
+            errors.add("The “Status Code” is not selected");
+        } else if (!fsuCrcBody.getStatusCode().matches("CRC")) {
+            errors.add("The “Status Code” field has an incorrect format");
+        }
+
+        if (!nullOrEmpty(fsuCrcBody.getDayofReporting()) &&
+                !fsuCrcBody.getDayofReporting().matches("(0?[1-9]|[12]\\d|3[01])")) {
+            errors.add("The “Day of Reporting” field has an incorrect format");
+        }
+
+        if (!nullOrEmpty(fsuCrcBody.getMonthofReporting()) &&
+                !fsuCrcBody.getMonthofReporting().matches("JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC")) {
+            errors.add("The “Month of Reporting” field has an incorrect format");
+        }
+
+        if (nullOrEmpty(fsuCrcBody.getActualTimeofGivenStatusEvent())) {
+            errors.add("The “Actual Time of Given Status Event” field is not filled");
+        } else if (!fsuCrcBody.getActualTimeofGivenStatusEvent().matches("([0-1][0-9]|[2][0-3])[0-5][0-9]")) {
+            errors.add("The “Actual Time of Given Status Event” field has an incorrect format");
+        }
+
+        if (nullOrEmpty(fsuCrcBody.getAirportCodeofReporting())) {
+            errors.add("The “Airport Code of Reporting” field is not filled");
+        } else if (!fsuCrcBody.getAirportCodeofReporting().matches("[a-zA-Z]{3}")) {
+            errors.add("The “Airport Code of Reporting” field has an incorrect format");
+        }
+
+        checkMovementSection(fsuCrcBody);
+
+        if (nullOrEmpty(fsuCrcBody.getAirportCodeofDeparture())) {
+            errors.add("The “Airport Code of Departure” field is not filled");
+        } else if (!fsuCrcBody.getAirportCodeofDeparture().matches("[a-zA-Z]{3}")) {
+            errors.add("The “Airport Code of Departure”  field has an incorrect format");
+        }
+
+        if (nullOrEmpty(fsuCrcBody.getAirportCodeofArrival())) {
+            errors.add("The “Airport Code of Arrival” field is not filled");
+        } else if (!fsuCrcBody.getAirportCodeofArrival().matches("[a-zA-Z]{3}")) {
+            errors.add("The “Airport Code of Arrival”  field has an incorrect format");
+        }
+
+        return errors;
+    }
+
+    public List<String> getListFsuDdlErrors(FsuDdlBody fsuDdlBody) {
+        checkDrawSection(fsuDdlBody);
+
+        if (nullOrEmpty(fsuDdlBody.getStatusCode())) {
+            errors.add("The “Status Code” is not selected");
+        } else if (!fsuDdlBody.getStatusCode().matches("DDL")) {
+            errors.add("The “Status Code” field has an incorrect format");
+        }
+
+        if (!nullOrEmpty(fsuDdlBody.getDayofDeliverytoconsigneesdoor()) &&
+                !fsuDdlBody.getDayofDeliverytoconsigneesdoor().matches("(0?[1-9]|[12]\\d|3[01])")) {
+            errors.add("The “Day of Delivery to consignee's door” field has an incorrect format");
+        }
+
+        if (!nullOrEmpty(fsuDdlBody.getMonthofDeliverytoconsigneesdoor()) &&
+                !fsuDdlBody.getMonthofDeliverytoconsigneesdoor().matches("JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC")) {
+            errors.add("The “Month of Delivery to consignee's door” field has an incorrect format");
+        }
+
+        if (nullOrEmpty(fsuDdlBody.getActualTimeofGivenStatusEvent())) {
+            errors.add("The “Actual Time of Given Status Event” field is not filled");
+        } else if (!fsuDdlBody.getActualTimeofGivenStatusEvent().matches("([0-1][0-9]|[2][0-3])[0-5][0-9]")) {
+            errors.add("The “Actual Time of Given Status Event” field has an incorrect format");
+        }
+
+        if (nullOrEmpty(fsuDdlBody.getAirportCodeofDeliverytoconsigneesdoor())) {
+            errors.add("The “Airport Code of Reporting” field is not filled");
+        } else if (!fsuDdlBody.getAirportCodeofDeliverytoconsigneesdoor().matches("[a-zA-Z]{3}")) {
+            errors.add("The “Airport Code of Delivery to consignee's door” field has an incorrect format");
+        }
+        checkMovementSection(fsuDdlBody);
+
+        return errors;
+    }
+
+    public List<String> getListFsuCcdErrors(FsuCcdBody fsuCcdBody) {
+        checkDrawSection(fsuCcdBody);
+
+        if (nullOrEmpty(fsuCcdBody.getStatusCode())) {
+            errors.add("The “Status Code” is not selected");
+        } else if (!fsuCcdBody.getStatusCode().matches("CCD")) {
+            errors.add("The “Status Code” field has an incorrect format");
+        }
+
+        if (!nullOrEmpty(fsuCcdBody.getDayofClearance()) &&
+                !fsuCcdBody.getDayofClearance().matches("(0?[1-9]|[12]\\d|3[01])")) {
+            errors.add("The “Day of Clearance” field has an incorrect format");
+        }
+
+        if (!nullOrEmpty(fsuCcdBody.getMonthofClearance()) &&
+                !fsuCcdBody.getMonthofClearance().matches("JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC")) {
+            errors.add("The “Month of Clearance” field has an incorrect format");
+        }
+
+        if (nullOrEmpty(fsuCcdBody.getActualTimeofGivenStatusEvent())) {
+            errors.add("The “Actual Time of Given Status Event” field is not filled");
+        } else if (!fsuCcdBody.getActualTimeofGivenStatusEvent().matches("([0-1][0-9]|[2][0-3])[0-5][0-9]")) {
+            errors.add("The “Actual Time of Given Status Event” field has an incorrect format");
+        }
+
+        if (nullOrEmpty(fsuCcdBody.getAirportCodeofClearance())) {
+            errors.add("The “Airport Code of Clearance” field is not filled");
+        } else if (!fsuCcdBody.getAirportCodeofClearance().matches("[a-zA-Z]{3}")) {
+            errors.add("The “Airport Code of Clearance” field has an incorrect format");
+        }
+        checkMovementSection(fsuCcdBody);
+
+        return errors;
+    }
+
+    public List<String> getListFsuFohErrors(FsuFohBody fsuFohBody) {
+        checkDrawSection(fsuFohBody);
+
+        if (nullOrEmpty(fsuFohBody.getStatusCode())) {
+            errors.add("The “Status Code” is not selected");
+        } else if (!fsuFohBody.getStatusCode().matches("FOH")) {
+            errors.add("The “Status Code” field has an incorrect format");
+        }
+
+        if (!nullOrEmpty(fsuFohBody.getDayofReceipt()) &&
+                !fsuFohBody.getDayofReceipt().matches("(0?[1-9]|[12]\\d|3[01])")) {
+            errors.add("The “Day of Receipt” field has an incorrect format");
+        }
+
+        if (!nullOrEmpty(fsuFohBody.getMonthofReceipt()) &&
+                !fsuFohBody.getMonthofReceipt().matches("JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC")) {
+            errors.add("The “Month of Receipt” field has an incorrect format");
+        }
+
+        if (nullOrEmpty(fsuFohBody.getActualTimeofGivenStatusEvent())) {
+            errors.add("The “Actual Time of Given Status Event” field is not filled");
+        } else if (!fsuFohBody.getActualTimeofGivenStatusEvent().matches("([0-1][0-9]|[2][0-3])[0-5][0-9]")) {
+            errors.add("The “Actual Time of Given Status Event” field has an incorrect format");
+        }
+
+        if (nullOrEmpty(fsuFohBody.getAirportCodeofReceipt())) {
+            errors.add("The “Airport Code of Receipt” field is not filled");
+        } else if (!fsuFohBody.getAirportCodeofReceipt().matches("[a-zA-Z]{3}")) {
+            errors.add("The “Airport Code of Receipt” field has an incorrect format");
+        }
+        checkMovementSection(fsuFohBody);
+
+        return errors;
+    }
+
+    public List<String> getListFsuDisErrors(FsuDisBody fsuDisBody) {
+
+        checkDrawSection(fsuDisBody);
+
+        if (nullOrEmpty(fsuDisBody.getStatusCode())) {
+            errors.add("The “Status Code” is not selected");
+        } else if (!fsuDisBody.getStatusCode().matches("DIS")) {
+            errors.add("The “Status Code” field has an incorrect format");
+        }
+
+        if (!nullOrEmpty(fsuDisBody.getCarrierCode()) &&
+                !fsuDisBody.getCarrierCode().matches("[a-zA-Z]{2}|[a-zA-Z]\\d|\\d[a-zA-Z]")) {
+            errors.add("The “Carrier Code” field has an incorrect format");
+        }
+
+
+        if (!nullOrEmpty(fsuDisBody.getFlightNumber()) &&
+                !fsuDisBody.getFlightNumber().matches("\\d{3}(\\d[a-zA-Z])?")) {
+            errors.add("The “Flight number” field has an incorrect format");
+        }
+
+        if (!nullOrEmpty(fsuDisBody.getDayofDiscrepancy()) &&
+                !fsuDisBody.getDayofDiscrepancy().matches("(0?[1-9]|[12]\\d|3[01])")) {
+            errors.add("The “Day of Discrepancy” field has an incorrect format");
+        }
+
+        if (!nullOrEmpty(fsuDisBody.getMonthofDiscrepancy()) &&
+                !fsuDisBody.getMonthofDiscrepancy().matches("JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC")) {
+            errors.add("The “Month of Scheduled Discrepancy” field has an incorrect format");
+        }
+
+        if (nullOrEmpty(fsuDisBody.getActualTimeofGivenStatusEvent())) {
+            errors.add("The “Actual Time of Given Status Event” field is not filled");
+        } else if (!fsuDisBody.getActualTimeofGivenStatusEvent().matches("([0-1][0-9]|[2][0-3])[0-5][0-9]")) {
+            errors.add("The “Actual Time of Given Status Event” field has an incorrect format");
+        }
+
+
+        if (nullOrEmpty(fsuDisBody.getAirportCodeofDiscrepancy())) {
+            errors.add("The “Airport Code of Discrepancy” field is not filled");
+        } else if (!fsuDisBody.getAirportCodeofDiscrepancy().matches("[a-zA-Z]{3}")) {
+            errors.add("The “Airport Code of Discrepancy” field has an incorrect format");
+        }
+
+        if (nullOrEmpty(fsuDisBody.getDiscrepancyCode())) {
+            errors.add("The “Discrepancy Code” field is not filled");
+        } else if (!fsuDisBody.getDiscrepancyCode().matches("[a-zA-Z]{4}")) {
+            errors.add("The “Discrepancy Code” field has an incorrect format");
+        }
+
+        checkMovementSection(fsuDisBody);
+        checkTimeIndicatorSection(fsuDisBody);
+
+        return errors;
+    }
+
+    public List<String> getListFsuNfdErrors(FsuNfdBody fsuNfdBody) {
+        checkDrawSection(fsuNfdBody);
+
+        if (nullOrEmpty(fsuNfdBody.getStatusCode())) {
+            errors.add("The “Status Code” is not selected");
+        } else if (!fsuNfdBody.getStatusCode().matches("NFD")) {
+            errors.add("The “Status Code” field has an incorrect format");
+        }
+
+        if (!nullOrEmpty(fsuNfdBody.getDayofNotification()) &&
+                !fsuNfdBody.getDayofNotification().matches("(0?[1-9]|[12]\\d|3[01])")) {
+            errors.add("The “Day of Notification” field has an incorrect format");
+        }
+
+        if (!nullOrEmpty(fsuNfdBody.getMonthofNotification()) &&
+                !fsuNfdBody.getMonthofNotification().matches("JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC")) {
+            errors.add("The “Month of Notification” field has an incorrect format");
+        }
+
+        if (nullOrEmpty(fsuNfdBody.getActualTimeofGivenStatusEvent())) {
+            errors.add("The “Actual Time of Given Status Event” field is not filled");
+        } else if (!fsuNfdBody.getActualTimeofGivenStatusEvent().matches("([0-1][0-9]|[2][0-3])[0-5][0-9]")) {
+            errors.add("The “Actual Time of Given Status Event” field has an incorrect format");
+        }
+
+        if (nullOrEmpty(fsuNfdBody.getAirportCodeofNotification())) {
+            errors.add("The “Airport Code of Notification” field is not filled");
+        } else if (!fsuNfdBody.getAirportCodeofNotification().matches("[a-zA-Z]{3}")) {
+            errors.add("The “Airport Code of Notification” field has an incorrect format");
+        }
+        checkMovementSection(fsuNfdBody);
 
         return errors;
     }

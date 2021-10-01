@@ -8,13 +8,10 @@ import java.util.List;
 @Data
 @Entity
 @Table (name = "organizations")
-public class Organizations {
+public class Organization {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column (name = "orgname")
-    private String orgname;
-
-//    @OneToMany(targetEntity=User.class, mappedBy="organizations",cascade=CascadeType.ALL, fetch = FetchType.LAZY)
-//    private List<User> usersList;
+    @Column (name = "name")
+    private String name;
 }
