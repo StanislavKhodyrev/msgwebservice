@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="9e72dbde-53e1-4806-97af-d8df2f8a4b83" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/out/artifacts/msgwebservice.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/vdm/msgwebservice/controller/AuthController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/CreateAccount.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/authenticate.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/test.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/static/asset-manifest.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/static/css/main.1a91c742.chunk.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/static/css/main.1a91c742.chunk.css.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/webapp/static/js/main.db8967e8.chunk.js" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="JpbToolWindowState">
+    <option name="myId2Visible">
+      <map>
+        <entry key="JPA Structure" value="false" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="TaskManager">
+    <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+</project>
