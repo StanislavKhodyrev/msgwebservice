@@ -1,4 +1,4 @@
-package com.vdm.msgwebservice.model;
+package com.vdm.msgwebservice.model.fsu;
 
 public class FsuDisBody extends DrawBody {
     private String CarrierCode;

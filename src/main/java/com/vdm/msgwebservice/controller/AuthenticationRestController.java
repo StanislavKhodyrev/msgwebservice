@@ -8,7 +8,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonObject;
 import com.vdm.msgwebservice.dto.AuthenticationRequestDTO;
 import com.vdm.msgwebservice.entity.Role;
-import com.vdm.msgwebservice.entity.Status;
 import com.vdm.msgwebservice.entity.User;
 import com.vdm.msgwebservice.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -17,21 +16,19 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Collectors;
 
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -75,14 +72,11 @@ public class AuthenticationRestController {
 
     @PostMapping("/logout")
     public void logout(HttpServletRequest request, HttpServletResponse response) {
-        SecurityContextLogoutHandler securityContextLogoutHandler = new SecurityContextLogoutHandler();
-        securityContextLogoutHandler.logout(request, response, null);
     }
 
     @PostMapping(path = "/CreateAccount")
     public JsonObject registration(@RequestBody AuthenticationRequestDTO request) {
         log.info("Creating account ...");
-        System.out.println(request);
         JsonObject response = new JsonObject();
         String email = request.getEmail();
         String username = request.getLogin();
@@ -91,8 +85,6 @@ public class AuthenticationRestController {
             user.setUsername(username);
             user.setPassword(request.getPassword());
             user.setEmail(request.getEmail());
-            user.setStatus(Status.NOT_ACTIVE);
-
             user.setCompany(request.getCompanyName());
             userService.register(user);
             response.addProperty("status", "The request for registration was successfully accepted. " +
@@ -105,13 +97,19 @@ public class AuthenticationRestController {
 
     @PostMapping(path = "/refresh")
     public void refresh(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String authorizationHeader = request.getHeader(AUTHORIZATION);
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+
+        Cookie cookie = Arrays.stream(request.getCookies())
+                .filter(t -> t.getName().equals("refresh_token"))
+                .findFirst().orElse(null);
+        log.info("refresh_token is: {}", cookie.getValue());
+        if ( cookie != null) {
             try {
-                String refreshToken = authorizationHeader.substring("Bearer ".length());
+                String refreshToken = cookie.getValue();
+
                 Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
                 JWTVerifier verifier = JWT.require(algorithm).build();
                 DecodedJWT decodedJWT = verifier.verify(refreshToken);
+
                 String username = decodedJWT.getSubject();
                 User user = userService.findByUsername(username);
                 String accessToken = JWT.create()
@@ -122,12 +120,14 @@ public class AuthenticationRestController {
                                 .map(Role::getName).collect(Collectors.toList()))
                         .sign(algorithm);
 
-                Map<String, String> tokens = new HashMap<>();
+                //response.setHeader("Authorization", accessToken);
 
+                Map<String, String> tokens = new HashMap<>();
                 tokens.put("access_token", accessToken);
-                response.addCookie(new Cookie("refresh_token", refreshToken));
                 response.setContentType(APPLICATION_JSON_VALUE);
                 new ObjectMapper().writeValue(response.getOutputStream(), tokens);
+
+
 
             } catch (Exception e) {
                 Map<String, String> errors = new HashMap<>();
@@ -139,7 +139,6 @@ public class AuthenticationRestController {
         } else {
             throw new RuntimeException("Refresh token is missing");
         }
-
     }
 
 }

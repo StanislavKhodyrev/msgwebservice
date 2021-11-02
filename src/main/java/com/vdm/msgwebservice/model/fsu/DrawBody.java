@@ -1,4 +1,4 @@
-package com.vdm.msgwebservice.model;
+package com.vdm.msgwebservice.model.fsu;
 
 import java.util.Locale;
 

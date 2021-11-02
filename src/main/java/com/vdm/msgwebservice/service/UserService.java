@@ -11,16 +11,19 @@ public interface UserService {
 
     Role saveRole(Role role);
 
-    void addRoleToUser(String username, String role);
+    void addRoleToUser(User user, String role);
 
     List<User> getAll();
 
     User findByUsername(String username);
+
+    User findByUsernameAndEmail(String username, String email);
 
     User findById(Long id);
 
     void delete(Long id);
 
     boolean existsByEmailAndUsername(String email, String username);
+
 
 }

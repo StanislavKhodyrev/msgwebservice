@@ -7,6 +7,7 @@ import com.vdm.msgwebservice.repository.RoleRepository;
 import com.vdm.msgwebservice.repository.UserRepository;
 import com.vdm.msgwebservice.service.UserService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 
 @Service
@@ -27,6 +29,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private RoleRepository roleRepository;
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
     public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
@@ -54,6 +57,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         log.info("Saving new user {} to database", user.getUsername(), user.getEmail());
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setStatus(Status.NOT_ACTIVE);
+        addRoleToUser(user, "USER");
         User registeredUser = userRepository.save(user);
         return registeredUser;
     }
@@ -93,10 +97,15 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public void addRoleToUser(String username, String roleName) {
-        log.info("Adding role {} to user {}", roleName, username);
-        User user = userRepository.findByUsername(username);
+    public void addRoleToUser(User user, String roleName) {
+        log.info("Adding role {} to user {}", roleName, user.getUsername());
         Role role = roleRepository.findByName(roleName);
-        user.getRoles().add(role);
+        user.addRole(role);
+    }
+
+    @Override
+    public User findByUsernameAndEmail(String username, String email) {
+        User user = userRepository.findByUsernameAndEmail(username, email);
+        return user;
     }
 }

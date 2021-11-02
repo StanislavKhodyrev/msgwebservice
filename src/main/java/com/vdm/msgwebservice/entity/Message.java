@@ -1,6 +1,9 @@
 package com.vdm.msgwebservice.entity;
 
-import com.vdm.msgwebservice.model.*;
+import com.vdm.msgwebservice.model.fsu.*;
+import com.vdm.msgwebservice.model.usm.IN;
+import com.vdm.msgwebservice.model.usm.OUT;
+import com.vdm.msgwebservice.model.usm.UcmBody;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -20,7 +23,7 @@ public class Message {
     private Long id;
     @Column(name = "org_id")
     private Long orgId;
-    @Column (name = "user_id")
+    @Column(name = "user_id")
     private long userId;
     @Column
     private String channel;
@@ -116,6 +119,7 @@ public class Message {
 
         return fsuDep;
     }
+
     //fullMovement
     public static Message createFsuArrMsg(FsuArrBody fsuArrBody) {
         Message fsuArr = new Message();
@@ -136,7 +140,11 @@ public class Message {
 
         msgbody.append("/" + fsuArrBody.getAirportCodeofArrival() + "/");
 
-        msgbody.append(createMovementSectionWithIndicators(fsuArrBody));
+        if (fsuArrBody.getStatusCode().equals("RCF")) {
+            msgbody.append(createMovementSection(fsuArrBody));
+        } else {
+            msgbody.append(createMovementSectionWithIndicators(fsuArrBody));
+        }
 
         fsuArr.setBody(msgbody.toString());
         fsuArr.setChannel(fsuArrBody.getTransmissionChannel());
@@ -150,7 +158,7 @@ public class Message {
         StringBuilder msgbody = createDraw(fsuAwdBody);
 
         msgbody.append(fsuAwdBody.getDayofDelivery() + fsuAwdBody.getMonthofDelivery() +
-                fsuAwdBody.getActualTimeofGivenStatusEvent() + "/" + fsuAwdBody.getAirportCodeofDelivery()+ "/");
+                fsuAwdBody.getActualTimeofGivenStatusEvent() + "/" + fsuAwdBody.getAirportCodeofDelivery() + "/");
 
         msgbody.append(createMovementSection(fsuAwdBody));
 
@@ -196,7 +204,7 @@ public class Message {
         StringBuilder msgbody = createDraw(fsuDdlBody);
 
         msgbody.append(fsuDdlBody.getDayofDeliverytoconsigneesdoor() + fsuDdlBody.getMonthofDeliverytoconsigneesdoor() +
-                fsuDdlBody.getActualTimeofGivenStatusEvent() + "/" + fsuDdlBody.getAirportCodeofDeliverytoconsigneesdoor()+ "/");
+                fsuDdlBody.getActualTimeofGivenStatusEvent() + "/" + fsuDdlBody.getAirportCodeofDeliverytoconsigneesdoor() + "/");
 
         msgbody.append(createMovementSection(fsuDdlBody));
 
@@ -207,12 +215,32 @@ public class Message {
         return fsuDdl;
     }
 
+    public static Message createFsuTgcMsg(FsuTgcBody fsuTgcBody) {
+        Message fsuTgc = new Message();
+        StringBuilder msgbody = createDraw(fsuTgcBody);
+
+        if (fsuTgcBody.getStatusCode().matches("RCT|TFD")) {
+            msgbody.append(fsuTgcBody.getCarrierCode() + "/");
+        }
+
+        msgbody.append(fsuTgcBody.getDayofTransfer() + fsuTgcBody.getMonthofTransfer() +
+                fsuTgcBody.getActualTimeofGivenStatusEvent() + "/" + fsuTgcBody.getAirportCodeofTransfer() + "/");
+
+        msgbody.append(createMovementSection(fsuTgcBody));
+
+        fsuTgc.setBody(msgbody.toString());
+        fsuTgc.setChannel(fsuTgcBody.getTransmissionChannel());
+        fsuTgc.setType(fsuTgcBody.getStatusCode());
+
+        return fsuTgc;
+    }
+
     public static Message createFsuCcdMsg(FsuCcdBody fsuCcdBody) {
         Message fsuCcd = new Message();
         StringBuilder msgbody = createDraw(fsuCcdBody);
 
         msgbody.append(fsuCcdBody.getDayofClearance() + fsuCcdBody.getMonthofClearance() +
-                fsuCcdBody.getActualTimeofGivenStatusEvent() + "/" + fsuCcdBody.getAirportCodeofClearance()+ "/");
+                fsuCcdBody.getActualTimeofGivenStatusEvent() + "/" + fsuCcdBody.getAirportCodeofClearance() + "/");
 
         msgbody.append(createMovementSection(fsuCcdBody));
 
@@ -228,9 +256,15 @@ public class Message {
         StringBuilder msgbody = createDraw(fsuFohBody);
 
         msgbody.append(fsuFohBody.getDayofReceipt() + fsuFohBody.getMonthofReceipt() +
-                fsuFohBody.getActualTimeofGivenStatusEvent() + "/" + fsuFohBody.getAirportCodeofReceipt()+ "/");
+                fsuFohBody.getActualTimeofGivenStatusEvent() + "/" + fsuFohBody.getAirportCodeofReceipt() + "/");
 
         msgbody.append(createMovementSection(fsuFohBody));
+
+        if (fsuFohBody.getStatusCode().equals("RCS")) {
+            if (!nullOrEmpty(fsuFohBody.getDayofReceipt())) {
+                msgbody.append("/" + fsuFohBody.getDayofReceipt());
+            }
+        }
 
         fsuFoh.setBody(msgbody.toString());
         fsuFoh.setChannel(fsuFohBody.getTransmissionChannel());
@@ -268,7 +302,7 @@ public class Message {
         StringBuilder msgbody = createDraw(fsuNfdBody);
 
         msgbody.append(fsuNfdBody.getDayofNotification() + fsuNfdBody.getMonthofNotification() +
-                fsuNfdBody.getActualTimeofGivenStatusEvent() + "/" + fsuNfdBody.getAirportCodeofNotification()+ "/");
+                fsuNfdBody.getActualTimeofGivenStatusEvent() + "/" + fsuNfdBody.getAirportCodeofNotification() + "/");
 
         msgbody.append(createMovementSection(fsuNfdBody));
 
@@ -279,11 +313,78 @@ public class Message {
         return fsuNfd;
     }
 
+    public static Message createFsuTrmMsg(FsuTrmBody fsuTrmBody) {
+        Message fsuTrm = new Message();
+        StringBuilder msgbody = createDraw(fsuTrmBody);
 
+        msgbody.append(fsuTrmBody.getCarrierCode() + "/" + fsuTrmBody.getAirportCodeofTransfer() + "/");
+        msgbody.append(createMovementSection(fsuTrmBody));
+
+        fsuTrm.setBody(msgbody.toString());
+        fsuTrm.setChannel(fsuTrmBody.getTransmissionChannel());
+        fsuTrm.setType(fsuTrmBody.getStatusCode());
+
+        return fsuTrm;
+    }
+
+    public static Message createUsmMsg(UcmBody ucmBody) {
+        Message usm = new Message();
+        StringBuilder msgbody = new StringBuilder();
+        msgbody.append("UCM\n");
+        msgbody.append(ucmBody.getCarrierCode() + ucmBody.getFlightNumberFirst());
+        if (!nullOrEmpty(ucmBody.getFlightNumberSecond())) {
+            msgbody.append("/" + ucmBody.getFlightNumberSecond());
+        }
+        msgbody.append("/" + ucmBody.getDayOfMonth());
+        if (!nullOrEmpty(ucmBody.getAircraftRegistration())) {
+            msgbody.append("." + ucmBody.getAircraftRegistration());
+        }
+        msgbody.append("." + ucmBody.getAirportCode() + "\n");
+
+        if (!ucmBody.isDeletedULD()) {
+            msgbody.append("IN\n");
+            for (IN in : ucmBody.getIN()) {
+                for (IN.Element Element : in.getElement()) {
+                    msgbody.append("." + Element.getULDIATACode() + Element.getULDSerialNumber());
+                    if (!nullOrEmpty(Element.getULDOwnerCode())) {
+                        msgbody.append(Element.getULDOwnerCode());
+                    }
+                }
+                msgbody.append("\n");
+            }
+
+            msgbody.append("OUT\n");
+            for (OUT out : ucmBody.getOUT()) {
+                for (OUT.Element el : out.getElement()) {
+                    msgbody.append("." + el.getULDIATACode() + el.getULDSerialNumber());
+                    if (!nullOrEmpty(el.getULDOwnerCode())) {
+                        msgbody.append(el.getULDOwnerCode());
+                    }
+                    if (nullOrEmpty(el.getAirportCodeofUnloading())) {
+                        msgbody.append("/" + el.getAirportCodeofUnloading());
+                    }
+                    if (nullOrEmpty(el.getContentCode())) {
+                        msgbody.append("/" + el.getContentCode());
+                    }
+                }
+                msgbody.append("\n");
+            }
+
+
+            for (String s : ucmBody.getSIDetail()) {
+                msgbody.append("SI " + s + "\n");
+            }
+        } else {
+            msgbody.append("IN\n.N\nOUT\n.N");
+        }
+        usm.setBody(msgbody.toString().trim());
+        //usm.setChannel(ucmBody.getTransmissionChannel());
+        usm.setType("USM");
+        return usm;
+    }
 
 
     public void saveToFile(String path) {
-        System.out.println(this.timestamp);
         String date = new SimpleDateFormat("dd-MM-yyyy_hh-mm-ss").format(this.timestamp);
         String name = "msg_" + this.id + "_" + date + ".msg";
         try (FileWriter writer = new FileWriter(path + name)) {

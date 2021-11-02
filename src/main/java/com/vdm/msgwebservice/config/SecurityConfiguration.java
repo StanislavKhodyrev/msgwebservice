@@ -8,15 +8,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.annotation.web.configurers.SessionManagementConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.firewall.DefaultHttpFirewall;
-import org.springframework.security.web.firewall.HttpFirewall;
 
 
 @Configuration
@@ -26,8 +22,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private final PasswordEncoder passwordEncoder;
 
     private final String[] resources = {"/static/**", "/resources/**"};
-    private final String[] registration = {"/", "/messages", "/API/V1/authenticate", "/API/V1/CreateAccount" +
-            "/API/V1/refresh"};
+    private final String[] registration = {"/", "/API/V1/authenticate", "/API/V1/CreateAccount", "/API/V1/logout", "/API/V1/refresh"};
 
     @Autowired
     public SecurityConfiguration(UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
@@ -48,8 +43,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().antMatchers(registration).permitAll();
         http.authorizeRequests().antMatchers(resources).permitAll();
         http.authorizeRequests().anyRequest().authenticated();
+        http.formLogin().loginPage("/");
         http.addFilter(new CustomAuthenticationFilter(authenticationManagerBean()));
         http.addFilterBefore(new CustomAuthorisationFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.logout().logoutUrl("/API/V1/logout").deleteCookies("refresh_token").invalidateHttpSession(true);
     }
 
     @Override

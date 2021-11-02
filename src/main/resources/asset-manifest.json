@@ -1,0 +1,22 @@
+{
+  "files": {
+    "main.css": "/static/css/main.660aaa68.chunk.css",
+    "main.js": "/static/js/main.f423e1be.chunk.js",
+    "main.js.map": "/static/js/main.f423e1be.chunk.js.map",
+    "runtime-main.js": "/static/js/runtime-main.1f12e9ed.js",
+    "runtime-main.js.map": "/static/js/runtime-main.1f12e9ed.js.map",
+    "static/js/2.48043771.chunk.js": "/static/js/2.48043771.chunk.js",
+    "static/js/2.48043771.chunk.js.map": "/static/js/2.48043771.chunk.js.map",
+    "index.html": "/index.html",
+    "static/css/main.660aaa68.chunk.css.map": "/static/css/main.660aaa68.chunk.css.map",
+    "static/js/2.48043771.chunk.js.LICENSE.txt": "/static/js/2.48043771.chunk.js.LICENSE.txt",
+    "static/media/App.css": "/static/media/MuseoSansCyrl_3.0096d834.otf",
+    "static/media/logo_VD-en.9f9cacfb.jpg": "/static/media/logo_VD-en.9f9cacfb.jpg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.1f12e9ed.js",
+    "static/js/2.48043771.chunk.js",
+    "static/css/main.660aaa68.chunk.css",
+    "static/js/main.f423e1be.chunk.js"
+  ]
+}

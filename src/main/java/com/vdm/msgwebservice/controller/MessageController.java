@@ -4,6 +4,8 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.vdm.msgwebservice.entity.*;
 import com.vdm.msgwebservice.model.*;
+import com.vdm.msgwebservice.model.fsu.*;
+import com.vdm.msgwebservice.model.usm.UcmBody;
 import com.vdm.msgwebservice.repository.MessageRepository;
 import com.vdm.msgwebservice.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +19,10 @@ import java.util.List;
 import static com.vdm.msgwebservice.entity.Message.*;
 
 @Controller
-@RequestMapping("/API/V1/FSU/")
+@RequestMapping("/API/V1/")
 public class MessageController {
     private final String filepath = "C:\\Users\\Stanislav.Khodyrev\\Desktop\\temp pdi\\";
-    //centos to path = "/WebService/MsgWebService/msgs/"
+    //private final String filepath = "/WebService/MsgWebService/msgs/";
     private final MessageRepository messageRepository;
     private final UserRepository userRepository;
     private JsonObject request;
@@ -33,7 +35,8 @@ public class MessageController {
     }
 
     @PostMapping(path = {"/FSU_DEP", "/FSU_BKD", "/FSU_MAN", "/FSU_PRE"}, produces = MediaType.APPLICATION_JSON_VALUE)
-    public @ResponseBody JsonObject fsuDep(@org.springframework.web.bind.annotation.RequestBody String jsonString) {
+    public @ResponseBody
+    JsonObject fsuDep(@org.springframework.web.bind.annotation.RequestBody String jsonString) {
         Gson g = new Gson();
         FsuDepBody fsuDepBody = g.fromJson(jsonString, FsuDepBody.class);
 
@@ -51,8 +54,9 @@ public class MessageController {
         return jsonObject;
     }
 
-    @PostMapping(path = "/FSU_ARR", produces = MediaType.APPLICATION_JSON_VALUE)
-    public @ResponseBody JsonObject fsuArr(@org.springframework.web.bind.annotation.RequestBody String jsonString) {
+    @PostMapping(path = {"/FSU_ARR", "/FSU_AWR", "/FSU_RCF"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody
+    JsonObject fsuArr(@org.springframework.web.bind.annotation.RequestBody String jsonString) {
 
         Gson g = new Gson();
         FsuArrBody fsuArrBody = g.fromJson(jsonString, FsuArrBody.class);
@@ -70,8 +74,9 @@ public class MessageController {
         return requestOk(fsu);
     }
 
-    @PostMapping(path = {"/FSU_AWD","/FSU_DLV"}, produces = MediaType.APPLICATION_JSON_VALUE)
-    public @ResponseBody JsonObject fsuAwd(@org.springframework.web.bind.annotation.RequestBody String jsonString) {
+    @PostMapping(path = {"/FSU_AWD", "/FSU_DLV"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody
+    JsonObject fsuAwd(@org.springframework.web.bind.annotation.RequestBody String jsonString) {
 
         Gson g = new Gson();
         FsuAwdBody fsuAwdBody = g.fromJson(jsonString, FsuAwdBody.class);
@@ -89,13 +94,10 @@ public class MessageController {
         return requestOk(fsu);
     }
 
-    @PostMapping(path = "/FSU_AWR", produces = MediaType.APPLICATION_JSON_VALUE)
-    public @ResponseBody JsonObject fsuAwr(@org.springframework.web.bind.annotation.RequestBody String jsonString) {
-        return fsuArr(jsonString);
-    }
 
     @PostMapping(path = "/FSU_CRC", produces = MediaType.APPLICATION_JSON_VALUE)
-    public @ResponseBody JsonObject fsuCrc(@org.springframework.web.bind.annotation.RequestBody String jsonString) {
+    public @ResponseBody
+    JsonObject fsuCrc(@org.springframework.web.bind.annotation.RequestBody String jsonString) {
         Gson g = new Gson();
         FsuCrcBody fsuCrcBody = g.fromJson(jsonString, FsuCrcBody.class);
 
@@ -113,7 +115,8 @@ public class MessageController {
     }
 
     @PostMapping(path = "/FSU_DDL", produces = MediaType.APPLICATION_JSON_VALUE)
-    public @ResponseBody JsonObject fsuDdl(@org.springframework.web.bind.annotation.RequestBody String jsonString) {
+    public @ResponseBody
+    JsonObject fsuDdl(@org.springframework.web.bind.annotation.RequestBody String jsonString) {
         Gson g = new Gson();
         FsuDdlBody fsuDdlBody = g.fromJson(jsonString, FsuDdlBody.class);
 
@@ -130,8 +133,28 @@ public class MessageController {
         return requestOk(fsu);
     }
 
+    @PostMapping(path = {"/FSU_TGC", "/FSU_RCT", "/FSU_TFD"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody
+    JsonObject fsuTgc(@org.springframework.web.bind.annotation.RequestBody String jsonString) {
+        Gson g = new Gson();
+        FsuTgcBody fsuTgcBody = g.fromJson(jsonString, FsuTgcBody.class);
+
+        validator = new Validator();
+        List<String> errors = validator.getListFsuTgcErrors(fsuTgcBody);
+        if (!validateMessageBody(errors))
+            return request;
+
+        Message fsu = createFsuTgcMsg(fsuTgcBody);
+        messageRepository.save(fsu);
+
+        fsu.saveToFile(filepath);
+
+        return requestOk(fsu);
+    }
+
     @PostMapping(path = "/FSU_CCD", produces = MediaType.APPLICATION_JSON_VALUE)
-    public @ResponseBody JsonObject fsuCcd(@org.springframework.web.bind.annotation.RequestBody String jsonString) {
+    public @ResponseBody
+    JsonObject fsuCcd(@org.springframework.web.bind.annotation.RequestBody String jsonString) {
         Gson g = new Gson();
         FsuCcdBody fsuCcdBody = g.fromJson(jsonString, FsuCcdBody.class);
 
@@ -148,8 +171,9 @@ public class MessageController {
         return requestOk(fsu);
     }
 
-    @PostMapping(path = "/FSU_FOH", produces = MediaType.APPLICATION_JSON_VALUE)
-    public @ResponseBody JsonObject fsuFoh(@org.springframework.web.bind.annotation.RequestBody String jsonString) {
+    @PostMapping(path = {"/FSU_FOH", "/FSU_RCS"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody
+    JsonObject fsuFoh(@org.springframework.web.bind.annotation.RequestBody String jsonString) {
         Gson g = new Gson();
         FsuFohBody fsuFohBody = g.fromJson(jsonString, FsuFohBody.class);
 
@@ -167,7 +191,8 @@ public class MessageController {
     }
 
     @PostMapping(path = "/FSU_DIS", produces = MediaType.APPLICATION_JSON_VALUE)
-    public @ResponseBody JsonObject fsuDis(@org.springframework.web.bind.annotation.RequestBody String jsonString) {
+    public @ResponseBody
+    JsonObject fsuDis(@org.springframework.web.bind.annotation.RequestBody String jsonString) {
         Gson g = new Gson();
         FsuDisBody fsuDisBody = g.fromJson(jsonString, FsuDisBody.class);
 
@@ -185,7 +210,8 @@ public class MessageController {
     }
 
     @PostMapping(path = "/FSU_NFD", produces = MediaType.APPLICATION_JSON_VALUE)
-    public @ResponseBody JsonObject fsuNfd(@org.springframework.web.bind.annotation.RequestBody String jsonString) {
+    public @ResponseBody
+    JsonObject fsuNfd(@org.springframework.web.bind.annotation.RequestBody String jsonString) {
         Gson g = new Gson();
         FsuNfdBody fsuNfdBody = g.fromJson(jsonString, FsuNfdBody.class);
 
@@ -202,7 +228,43 @@ public class MessageController {
         return requestOk(fsu);
     }
 
+    @PostMapping(path = "/FSU_TRM", produces = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody
+    JsonObject fsuTrm(@org.springframework.web.bind.annotation.RequestBody String jsonString) {
+        Gson g = new Gson();
+        FsuTrmBody fsuTrmBody = g.fromJson(jsonString, FsuTrmBody.class);
 
+        validator = new Validator();
+        List<String> errors = validator.getListFsuTrmErrors(fsuTrmBody);
+        if (!validateMessageBody(errors))
+            return request;
+
+        Message fsu = createFsuTrmMsg(fsuTrmBody);
+        messageRepository.save(fsu);
+
+        fsu.saveToFile(filepath);
+
+        return requestOk(fsu);
+    }
+
+    @PostMapping(path = "/UCM", produces = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody
+    JsonObject ucm(@org.springframework.web.bind.annotation.RequestBody String jsonString) {
+        Gson g = new Gson();
+        UcmBody ucmBody = g.fromJson(jsonString, UcmBody.class);
+
+        validator = new Validator();
+        List<String> errors = validator.getListUsmErrors(ucmBody);
+        if (!validateMessageBody(errors))
+            return request;
+
+        Message fsu = createUsmMsg(ucmBody);
+        messageRepository.save(fsu);
+
+        fsu.saveToFile(filepath);
+
+        return requestOk(fsu);
+    }
 
     private boolean validateMessageBody(List<String> errors) {
         boolean result = true;

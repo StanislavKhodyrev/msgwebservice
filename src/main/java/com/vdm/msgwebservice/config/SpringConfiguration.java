@@ -17,7 +17,7 @@ import org.thymeleaf.spring5.view.ThymeleafViewResolver;
 import javax.sql.DataSource;
 
 @Configuration
-public class SpringConfiguration implements WebMvcConfigurer   {
+public class SpringConfiguration implements WebMvcConfigurer {
 
     private final ApplicationContext applicationContext;
     private final Environment env;
@@ -38,12 +38,6 @@ public class SpringConfiguration implements WebMvcConfigurer   {
         return templateResolver;
     }
 
-    @Override
-    public void addResourceHandlers(final ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/css/**").addResourceLocations("/static/css/");
-        registry.addResourceHandler("/js/**").addResourceLocations("/static/js/");
-        registry.addResourceHandler("/media/**").addResourceLocations("/static/media/");
-    }
 
     @Bean
     public SpringTemplateEngine templateEngine() {
@@ -67,7 +61,10 @@ public class SpringConfiguration implements WebMvcConfigurer   {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedMethods("*").allowedOrigins("*"); //?
+                        .allowedOrigins("http://localhost:8082", "http://10.7.0.38:8082", "http://10.7.0.108:8082",
+                                "http://10.7.100.105:8080", "http://ui-agent.volga-dnepr.com:8082/")
+                        .allowedMethods("*")
+                        .allowCredentials(true);
             }
         };
     }
@@ -94,6 +91,16 @@ public class SpringConfiguration implements WebMvcConfigurer   {
     }
 
     @Bean
+    public DataSource thirdDataSource() {
+        DriverManagerDataSource dataSource = new DriverManagerDataSource();
+        dataSource.setDriverClassName(env.getProperty("spring.datasource3.driver-class-name"));
+        dataSource.setUrl(env.getProperty("spring.datasource3.url"));
+        dataSource.setUsername(env.getProperty("spring.datasource3.username"));
+        dataSource.setPassword(env.getProperty("spring.datasource3.password"));
+        return dataSource;
+    }
+
+    @Bean
     public JdbcTemplate jdbcTemplateOne(@Qualifier("firstDataSource") DataSource ds) {
         return new JdbcTemplate(ds);
     }
@@ -103,4 +110,8 @@ public class SpringConfiguration implements WebMvcConfigurer   {
         return new JdbcTemplate(ds);
     }
 
+    @Bean
+    public JdbcTemplate jdbcTemplateThree(@Qualifier("thirdDataSource") DataSource ds) {
+        return new JdbcTemplate(ds);
+    }
 }

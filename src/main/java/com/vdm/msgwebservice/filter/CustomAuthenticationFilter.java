@@ -6,10 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
-import com.google.gson.JsonSyntaxException;
-import com.vdm.msgwebservice.service.UserService;
 import lombok.extern.slf4j.Slf4j;
-import org.codehaus.jettison.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -26,7 +23,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -50,11 +46,10 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         JsonObject jsonObject = getJsonFromBody(request);
 
         String login = jsonObject.get("Login").toString().replaceAll("\"","");
-        log.info("User is: {}", login);
         String password = jsonObject.get("Password").toString().replaceAll("\"","");
-        log.info("Password is: {}", password);
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(login, password);
+        log.info("Username: {}, password: {}", login, password);
 
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(login, password);
         return authenticationManager.authenticate(authenticationToken);
     }
 
@@ -68,7 +63,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         // 12 * 60 * 60 * 1000 = 12 (h)
         String accessToken = JWT.create()
                 .withSubject(user.getUsername())
-                .withExpiresAt(new Date(System.currentTimeMillis() + 10 * 60 * 1000))
+                .withExpiresAt(new Date(System.currentTimeMillis()  + 20 * 1000))
                 .withIssuer(request.getRequestURL().toString())
                 .withClaim("roles", user.getAuthorities().stream()
                         .map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
@@ -80,13 +75,13 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
                 .withIssuer(request.getRequestURL().toString())
                 .sign(algorithm);
 
-//        response.setHeader("access_token", accessToken);
-//        response.setHeader("refresh_token", refreshToken);
-        Map<String, String> tokens = new HashMap<>();
+        response.setHeader("Authorization", accessToken);
+        Cookie cookie = new Cookie("refresh_token", refreshToken);
+        cookie.setHttpOnly(true);
+        response.addCookie(cookie);
 
+        Map<String, String> tokens = new HashMap<>();
         tokens.put("access_token", accessToken);
-        //tokens.put("refresh_token", refreshToken);
-        response.addCookie(new Cookie("refresh_token", refreshToken));
         response.setContentType(APPLICATION_JSON_VALUE);
         new ObjectMapper().writeValue(response.getOutputStream(), tokens);
     }
@@ -107,11 +102,9 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         try (BufferedReader reader = request.getReader()) {
             while ((line = reader.readLine()) != null) {
                 sb.append(line);
-                //log.info("response:" + line);
             }
             jsonObject = new JsonParser().parse(sb.toString()).getAsJsonObject();
         } catch (IOException | JsonParseException e) {
-            System.out.println(sb.toString());
             e.printStackTrace();
         }
         return jsonObject;

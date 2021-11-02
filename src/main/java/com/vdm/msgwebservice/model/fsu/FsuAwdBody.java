@@ -1,4 +1,4 @@
-package com.vdm.msgwebservice.model;
+package com.vdm.msgwebservice.model.fsu;
 
 public class FsuAwdBody extends DrawBody{
     private String DayofDelivery;
@@ -18,7 +18,7 @@ public class FsuAwdBody extends DrawBody{
     }
 
     public String getMonthofDelivery() {
-        return MonthofDelivery;
+        return nullUpperCase(MonthofDelivery);
     }
 
     public void setMonthofDelivery(String monthofDelivery) {
@@ -34,7 +34,7 @@ public class FsuAwdBody extends DrawBody{
     }
 
     public String getAirportCodeofDelivery() {
-        return AirportCodeofDelivery;
+        return nullUpperCase(AirportCodeofDelivery);
     }
 
     public void setAirportCodeofDelivery(String airportCodeofDelivery) {

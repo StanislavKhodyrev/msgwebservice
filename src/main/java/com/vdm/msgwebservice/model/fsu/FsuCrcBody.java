@@ -1,4 +1,4 @@
-package com.vdm.msgwebservice.model;
+package com.vdm.msgwebservice.model.fsu;
 
 public class FsuCrcBody extends DrawBody {
     private String CarrierCode;
@@ -40,7 +40,7 @@ public class FsuCrcBody extends DrawBody {
     }
 
     public String getMonthofReporting() {
-        return MonthofReporting;
+        return nullUpperCase(MonthofReporting);
     }
 
     public void setMonthofReporting(String monthofReporting) {
@@ -56,7 +56,7 @@ public class FsuCrcBody extends DrawBody {
     }
 
     public String getAirportCodeofReporting() {
-        return AirportCodeofReporting;
+        return nullUpperCase(AirportCodeofReporting);
     }
 
     public void setAirportCodeofReporting(String airportCodeofReporting) {
@@ -64,7 +64,7 @@ public class FsuCrcBody extends DrawBody {
     }
 
     public String getAirportCodeofDeparture() {
-        return AirportCodeofDeparture;
+        return nullUpperCase(AirportCodeofDeparture);
     }
 
     public void setAirportCodeofDeparture(String airportCodeofDeparture) {
@@ -72,7 +72,7 @@ public class FsuCrcBody extends DrawBody {
     }
 
     public String getAirportCodeofArrival() {
-        return AirportCodeofArrival;
+        return nullUpperCase(AirportCodeofArrival);
     }
 
     public void setAirportCodeofArrival(String airportCodeofArrival) {
@@ -88,7 +88,7 @@ public class FsuCrcBody extends DrawBody {
     }
 
     public String getMonthofScheduledDeparture() {
-        return MonthofScheduledDeparture;
+        return nullUpperCase(MonthofScheduledDeparture);
     }
 
     public void setMonthofScheduledDeparture(String monthofScheduledDeparture) {

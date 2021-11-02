@@ -1,5 +1,10 @@
 package com.vdm.msgwebservice.model;
 
+import com.vdm.msgwebservice.model.fsu.*;
+import com.vdm.msgwebservice.model.usm.IN;
+import com.vdm.msgwebservice.model.usm.OUT;
+import com.vdm.msgwebservice.model.usm.UcmBody;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -71,7 +76,7 @@ public class Validator {
 
         if (nullOrEmpty(fsuArrBody.getStatusCode())) {
             errors.add("The “Status Code” is not selected");
-        } else if (!fsuArrBody.getStatusCode().matches("ARR|AWR")) {
+        } else if (!fsuArrBody.getStatusCode().matches("ARR|AWR|RCF")) {
             errors.add("The “Status Code” field has an incorrect format");
         }
 
@@ -114,7 +119,9 @@ public class Validator {
         }
 
         checkMovementSection(fsuArrBody);
-        checkTimeIndicatorSection(fsuArrBody);
+        if (!fsuArrBody.getStatusCode().equals("RCF")) {
+            checkTimeIndicatorSection(fsuArrBody);
+        }
 
         return errors;
     }
@@ -238,6 +245,47 @@ public class Validator {
         return errors;
     }
 
+    public List<String> getListFsuTgcErrors(FsuTgcBody fsuTgcBody) {
+        checkDrawSection(fsuTgcBody);
+
+        if (nullOrEmpty(fsuTgcBody.getStatusCode())) {
+            errors.add("The “Status Code” is not selected");
+        } else if (!fsuTgcBody.getStatusCode().matches("TGC|RCT|TFD")) {
+            errors.add("The “Status Code” field has an incorrect format");
+        }
+
+        if (fsuTgcBody.getStatusCode().matches("RCT|TFD")
+                && !nullOrEmpty(fsuTgcBody.getCarrierCode()) &&
+                    !fsuTgcBody.getCarrierCode().matches("[a-zA-Z]{2}|[a-zA-Z]\\d|\\d[a-zA-Z]")) {
+                errors.add("The “Carrier Code” field has an incorrect format");
+        }
+
+        if (!nullOrEmpty(fsuTgcBody.getDayofTransfer()) &&
+                !fsuTgcBody.getDayofTransfer().matches("(0?[1-9]|[12]\\d|3[01])")) {
+            errors.add("The “Day of Transfer to consignee's door” field has an incorrect format");
+        }
+
+        if (!nullOrEmpty(fsuTgcBody.getMonthofTransfer()) &&
+                !fsuTgcBody.getMonthofTransfer().matches("JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC")) {
+            errors.add("The “Month of Transfer to consignee's door” field has an incorrect format");
+        }
+
+        if (nullOrEmpty(fsuTgcBody.getActualTimeofGivenStatusEvent())) {
+            errors.add("The “Actual Time of Given Status Event” field is not filled");
+        } else if (!fsuTgcBody.getActualTimeofGivenStatusEvent().matches("([0-1][0-9]|[2][0-3])[0-5][0-9]")) {
+            errors.add("The “Actual Time of Given Status Event” field has an incorrect format");
+        }
+
+        if (nullOrEmpty(fsuTgcBody.getAirportCodeofTransfer())) {
+            errors.add("The “Airport Code of Transfer” field is not filled");
+        } else if (!fsuTgcBody.getAirportCodeofTransfer().matches("[a-zA-Z]{3}")) {
+            errors.add("The “Airport Code of Transfer to consignee's door” field has an incorrect format");
+        }
+        checkMovementSection(fsuTgcBody);
+
+        return errors;
+    }
+
     public List<String> getListFsuCcdErrors(FsuCcdBody fsuCcdBody) {
         checkDrawSection(fsuCcdBody);
 
@@ -278,7 +326,7 @@ public class Validator {
 
         if (nullOrEmpty(fsuFohBody.getStatusCode())) {
             errors.add("The “Status Code” is not selected");
-        } else if (!fsuFohBody.getStatusCode().matches("FOH")) {
+        } else if (!fsuFohBody.getStatusCode().matches("FOH|RCS")) {
             errors.add("The “Status Code” field has an incorrect format");
         }
 
@@ -304,6 +352,11 @@ public class Validator {
             errors.add("The “Airport Code of Receipt” field has an incorrect format");
         }
         checkMovementSection(fsuFohBody);
+        if (fsuFohBody.getStatusCode().equals("RCS")) {
+            if (fsuFohBody.getReceivedfromDetail().length() > 35) {
+                errors.add("The “Received from Detail” field has an incorrect format");
+            }
+        }
 
         return errors;
     }
@@ -395,6 +448,128 @@ public class Validator {
             errors.add("The “Airport Code of Notification” field has an incorrect format");
         }
         checkMovementSection(fsuNfdBody);
+
+        return errors;
+    }
+
+    public List<String> getListFsuTrmErrors(FsuTrmBody fsuTrmBody) {
+
+        checkDrawSection(fsuTrmBody);
+
+        if (nullOrEmpty(fsuTrmBody.getStatusCode())) {
+            errors.add("The “Status Code” is not selected");
+        } else if (!fsuTrmBody.getStatusCode().matches("TRM")) {
+            errors.add("The “Status Code” field has an incorrect format");
+        }
+
+        if (!nullOrEmpty(fsuTrmBody.getCarrierCode()) &&
+                !fsuTrmBody.getCarrierCode().matches("[a-zA-Z]{2}|[a-zA-Z]\\d|\\d[a-zA-Z]")) {
+            errors.add("The “Carrier Code” field has an incorrect format");
+        }
+
+        if (nullOrEmpty(fsuTrmBody.getAirportCodeofTransfer())) {
+            errors.add("The “Airport Code of Transfer” field is not filled");
+        } else if (!fsuTrmBody.getAirportCodeofTransfer().matches("[a-zA-Z]{3}")) {
+            errors.add("The “Airport Code of Transfer” field has an incorrect format");
+        }
+
+        checkMovementSection(fsuTrmBody);
+
+        return errors;
+    }
+
+    public List<String> getListUsmErrors(UcmBody ucmBody) {
+        if (!ucmBody.isDeletedULD()) {
+            for (IN in : ucmBody.getIN()) {
+                if (in.getElement().size() > 5) {
+                    errors.add("The number of elements in the IN section exceeds the allowable value = 5");
+                }
+                for (IN.Element element : in.getElement()) {
+                    if (nullOrEmpty(element.getULDIATACode())) {
+                        errors.add("The “IN: ULD IATA Code” is not selected");
+                    } else if (!element.getULDIATACode().matches("[a-zA-Z][0-9a-zA-Z]{2}")) {
+                        errors.add("The “IN: ULD IATA Code” field has an incorrect format");
+                    }
+                    if (nullOrEmpty(element.getULDSerialNumber())) {
+                        errors.add("The “IN: ULD Serial Number” is not selected");
+                    } else if (!element.getULDSerialNumber().matches("\\b[0-9a-zA-Z]\\d{0,11}")) {
+                        System.out.println(element.getULDSerialNumber());
+                        errors.add("The “IN: ULD Serial Number” field has an incorrect format");
+                    }
+                    if (!nullOrEmpty(element.getULDOwnerCode()) &&
+                            (!element.getULDOwnerCode().matches("[0-9a-zA-Z]{2}[a-zA-Z]?"))) {
+                        errors.add("The “IN: ULD Owner Code” field has an incorrect format");
+                    }
+                }
+            }
+            for (OUT out : ucmBody.getOUT()) {
+                if (out.getElement().size() > 3) {
+                    errors.add("The number of elements in the OUT section exceeds the allowable value = 3");
+                }
+                for (OUT.Element element : out.getElement()) {
+                    if (nullOrEmpty(element.getULDIATACode())) {
+                        errors.add("The “OUT: ULD IATA Code” is not selected");
+                    } else if (!element.getULDIATACode().matches("[a-zA-Z][0-9a-zA-Z]{2}")) {
+                        errors.add("The “OUT: ULD IATA Code” field has an incorrect format");
+                    }
+                    if (nullOrEmpty(element.getULDSerialNumber())) {
+                        errors.add("The “OUT: ULD Serial Number” is not selected");
+                    } else if (!element.getULDSerialNumber().matches("\\b[0-9a-zA-Z]\\d{0,11}")) {
+                        errors.add("The “OUT: ULD Serial Number” field has an incorrect format");
+                    }
+                    if (!nullOrEmpty(element.getULDOwnerCode()) &&
+                            (!element.getULDOwnerCode().matches("[0-9a-zA-Z]{2}[a-zA-Z]?"))) {
+                        errors.add("The “OUT: ULD Owner Code” field has an incorrect format");
+                    }
+                    if (nullOrEmpty(element.getAirportCodeofUnloading())) {
+                        errors.add("The “OUT: Airport Code of Unloading” is not selected");
+                    } else if (!element.getAirportCodeofUnloading().matches("[a-zA-Z]{3}")) {
+                        errors.add("The “OUT: Airport Code of Unloading” field has an incorrect format");
+                    }
+                    if (!nullOrEmpty(element.getContentCode()) &&
+                            (!element.getContentCode().matches("[a-zA-Z]"))) {
+                        errors.add("The “OUT: Content Code” field has an incorrect format");
+                    }
+                }
+            }
+            for (String s : ucmBody.getSIDetail()) {
+                if (!nullOrEmpty(s) && s.length() > 61) {
+                    errors.add("The “SI: details” field has more than 61 characters");
+                }
+            }
+        }
+//        if (nullOrEmpty(ucmBody.getTransmissionChannel())) {
+//            errors.add("The “Transmission Channel Type” is not selected");
+//        }
+        if (nullOrEmpty(ucmBody.getCarrierCode())) {
+            errors.add("The “Carrier Code” is not selected");
+        } else if (!ucmBody.getCarrierCode().matches("\\b[0-9a-zA-Z]{2}[a-zA-Z]?")) {
+            errors.add("The “Carrier Code” field has an incorrect format");
+        }
+        if (nullOrEmpty(ucmBody.getFlightNumberFirst())) {
+            errors.add("The “First Flight Number” is not selected");
+        } else if (!ucmBody.getFlightNumberFirst().matches("\\b\\d{1,4}[a-zA-Z]?")) {
+            errors.add("The “First Flight Number” field has an incorrect format");
+        }
+        if (!nullOrEmpty(ucmBody.getFlightNumberSecond()) &&
+            (!ucmBody.getFlightNumberSecond().matches("\\b\\d{1,4}[a-zA-Z]?"))) {
+            errors.add("The “Second Flight Number” field has an incorrect format");
+        }
+        if (nullOrEmpty(ucmBody.getDayOfMonth())) {
+            errors.add("The “Date of Month” is not selected");
+        } else if (!ucmBody.getDayOfMonth().matches("(0?[1-9]|[12]\\d|3[01])")) {
+            errors.add("The “Date of Month” field has an incorrect format");
+        }
+        if (nullOrEmpty(ucmBody.getAircraftRegistration())) {
+            errors.add("The “Aircraft Registration” is not selected");
+        } else if (!ucmBody.getAircraftRegistration().matches("[0-9a-zA-Z]{5,7}")) {
+            errors.add("The “Aircraft Registration” field has an incorrect format");
+        }
+        if (nullOrEmpty(ucmBody.getAirportCode())) {
+            errors.add("The “Aircraft Code” is not selected");
+        } else if (!ucmBody.getAirportCode().matches("[a-zA-Z]{3}")) {
+            errors.add("The “Aircraft Code” field has an incorrect format");
+        }
 
         return errors;
     }

@@ -1,10 +1,12 @@
-package com.vdm.msgwebservice.model;
+package com.vdm.msgwebservice.model.fsu;
 
 public class FsuFohBody extends DrawBody {
     private String DayofReceipt;
     private String MonthofReceipt;
     private String ActualTimeofGivenStatusEvent;
     private String AirportCodeofReceipt;
+    private String ReceivedfromDetail;
+
 
     public String getDayofReceipt() {
         return DayofReceipt;
@@ -36,5 +38,13 @@ public class FsuFohBody extends DrawBody {
 
     public void setAirportCodeofReceipt(String airportCodeofReceipt) {
         AirportCodeofReceipt = airportCodeofReceipt;
+    }
+
+    public String getReceivedfromDetail() {
+        return nullUpperCase(ReceivedfromDetail);
+    }
+
+    public void setReceivedfromDetail(String receivedfromDetail) {
+        ReceivedfromDetail = receivedfromDetail;
     }
 }
