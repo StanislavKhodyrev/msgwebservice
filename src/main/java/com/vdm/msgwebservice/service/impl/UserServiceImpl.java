@@ -18,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 
 @Service
@@ -45,6 +44,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         } else {
             log.info("User {} found in the database", username);
         }
+
         Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
         user.getRoles().forEach(role ->
                 authorities.add(new SimpleGrantedAuthority(role.getName())));

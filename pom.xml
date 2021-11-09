@@ -103,6 +103,11 @@
             <version>1.4.7</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.volga_dnepr</groupId>
+            <artifactId>ips-client</artifactId>
+            <version>1.0</version>
+        </dependency>
 
 
     </dependencies>
@@ -124,6 +129,14 @@
             </plugin>
         </plugins>
     </build>
+
+    <repositories>
+        <repository>
+            <id>nexus</id>
+            <name>nexus</name>
+            <url>http://10.50.10.26:8081/repository/Shared-Maven-Hosted/</url>
+        </repository>
+    </repositories>
 
 
 

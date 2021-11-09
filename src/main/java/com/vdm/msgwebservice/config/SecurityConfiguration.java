@@ -2,6 +2,7 @@ package com.vdm.msgwebservice.config;
 
 import com.vdm.msgwebservice.filter.CustomAuthenticationFilter;
 import com.vdm.msgwebservice.filter.CustomAuthorisationFilter;
+import com.volga_dnepr.ips.client.annotations.EnableIdentityProviderSupport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
